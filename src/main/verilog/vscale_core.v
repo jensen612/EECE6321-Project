@@ -1,3 +1,5 @@
+//test
+
 `include "vscale_hasti_constants.vh"
 `include "vscale_ctrl_constants.vh"
 `include "vscale_csr_addr_map.vh"
@@ -71,7 +73,7 @@ module vscale_core(
                                    .hsize(imem_hsize),
                                    .hburst(imem_hburst),
                                    .hmastlock(imem_hmastlock),
-                                   .hprot(imem_hprot),
+/                                   .hprot(imem_hprot),
                                    .htrans(imem_htrans),
                                    .hwdata(imem_hwdata),
                                    .hrdata(imem_hrdata),
@@ -81,7 +83,7 @@ module vscale_core(
                                    .core_mem_wen(1'b0),
                                    .core_mem_size(`HASTI_SIZE_WORD),
                                    .core_mem_addr(imem_addr),
-                                   .core_mem_wdata_delayed(32'b0),
+/                                   .core_mem_wdata_delayed(32'b0),
                                    .core_mem_rdata(imem_rdata),
                                    .core_mem_wait(imem_wait),
                                    .core_badmem_e(imem_badmem_e)
