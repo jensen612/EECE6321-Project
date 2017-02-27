@@ -66,12 +66,12 @@ architecture rtl of addressgroup is
     
     begin
         ic: instructioncounter port map (
-            clk => clk,
-            load => load_ic,
-            inc => inc,
+            clk => clk,    
+            load => load_ic,             -- Come from load_ic signal in control unit
+            inc => inc,                  -- Come from inc_ic signal in control unit
             reset => reset_ic,
-            data_in => address_in,
-            data_out => instruction 
+            data_in => address_in,       -- Come from alu output
+            data_out => instruction      -- instruction counter data output goes to mux and to mi address
         ); 
         
         mux: multiplexer2 
@@ -79,9 +79,9 @@ architecture rtl of addressgroup is
                 w => 32
             )
             port map (
-                selector => sel_source,
-                data_in_0 => instruction,
-                data_in_1 => address_in,
+                selector => sel_source,    -- Come from c1 in control unit
+                data_in_0 => instruction,  -- Come from ic data_out
+                data_in_1 => address_in,   -- Come from alu output 
                 data_out => address_out
             );
         
