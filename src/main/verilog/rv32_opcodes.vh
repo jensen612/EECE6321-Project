@@ -58,30 +58,32 @@
 
 // Branch FUNCT3 encodings
 
-`define RV32_FUNCT3_BEQ  0
-`define RV32_FUNCT3_BNE  1
-`define RV32_FUNCT3_BLT  4
-`define RV32_FUNCT3_BGE  5
-`define RV32_FUNCT3_BLTU 6
-`define RV32_FUNCT3_BGEU 7
+`define RV32_FUNCT3_BEQ  0 //take branch if registers equal
+`define RV32_FUNCT3_BNE  1 //take branch if registers unequal
+`define RV32_FUNCT3_BLT  4 // branch if less than, signed comparison
+`define RV32_FUNCT3_BGE  5 // branch if greater than, signed comparison
+`define RV32_FUNCT3_BLTU 6 // branch if less than, unsigned comparison
+`define RV32_FUNCT3_BGEU 7 // branch if greater than, unsigned comparison
 
 // MISC-MEM FUNCT3 encodings
-`define RV32_FUNCT3_FENCE   0
-`define RV32_FUNCT3_FENCE_I 1
+`define RV32_FUNCT3_FENCE   0 //order device I/O and memory accesses as viewed by other RISCV threads and external devices/coprocessors
+`define RV32_FUNCT3_FENCE_I 1 //synchronize instruction and data stream
 
 // SYSTEM FUNCT3 encodings
 
 `define RV32_FUNCT3_PRIV   0
-`define RV32_FUNCT3_CSRRW  1
-`define RV32_FUNCT3_CSRRS  2
-`define RV32_FUNCT3_CSRRC  3
-`define RV32_FUNCT3_CSRRWI 5
+`define RV32_FUNCT3_CSRRW  1 //atomic read/write CSR
+`define RV32_FUNCT3_CSRRS  2 //atomic read and set bit CSR
+`define RV32_FUNCT3_CSRRC  3 //atomic read and clear bit CSR
+
+//similar to above, but  they update the CSR using a 5-bit zero-extended immediate (zimm[4:0])
+`define RV32_FUNCT3_CSRRWI 5 
 `define RV32_FUNCT3_CSRRSI 6
 `define RV32_FUNCT3_CSRRCI 7
 
 // PRIV FUNCT12 encodings
 
-`define RV32_FUNCT12_ECALL  12'b000000000000
+`define RV32_FUNCT12_ECALL  12'b000000000000 //Cant find these next 4
 `define RV32_FUNCT12_EBREAK 12'b000000000001
 `define RV32_FUNCT12_ERET   12'b000100000000
 `define RV32_FUNCT12_WFI    12'b000100000010
@@ -89,11 +91,11 @@
 // RV32M encodings
 `define RV32_FUNCT7_MUL_DIV 7'd1
 
-`define RV32_FUNCT3_MUL    3'd0
-`define RV32_FUNCT3_MULH   3'd1
-`define RV32_FUNCT3_MULHSU 3'd2
-`define RV32_FUNCT3_MULHU  3'd3
-`define RV32_FUNCT3_DIV    3'd4
-`define RV32_FUNCT3_DIVU   3'd5
-`define RV32_FUNCT3_REM    3'd6
-`define RV32_FUNCT3_REMU   3'd7
+`define RV32_FUNCT3_MUL    3'd0 // XLEN-bit×XLEN-bit multiplication and places the lower XLEN bits in the destination register
+`define RV32_FUNCT3_MULH   3'd1 //multiply high: XLEN-bitxCLEN-bit multplication, places highest XLEN bits in destination register
+`define RV32_FUNCT3_MULHSU 3'd2 //MULH, signed x unsigned
+`define RV32_FUNCT3_MULHU  3'd3 // MULH, unsigned x unsigned
+`define RV32_FUNCT3_DIV    3'd4// division of XLEN, signed
+`define RV32_FUNCT3_DIVU   3'd5 //vidision by XLEN, unsigned
+`define RV32_FUNCT3_REM    3'd6 //remainder of division operation, X%Y
+`define RV32_FUNCT3_REMU   3'd7 //remainder of division, unsigned values
