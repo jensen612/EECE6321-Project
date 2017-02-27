@@ -45,7 +45,7 @@ entity controlunit is
         load_c:         out std_logic;                      -- carry flag load signal
         load_z:         out std_logic;                      -- zero flag load signal
         
-        -- communication with vecor unit
+        -- communication with vector unit
         ir_ready:       out std_logic;                      -- next instruction has been loaded into ir
         s_ready:        out std_logic;                      -- data from scalar unit or mi is ready
         s_fetched:      out std_logic;                      -- signal for vector unit to continue
@@ -63,7 +63,7 @@ architecture rtl of controlunit is
         st1, st2, vst1, vst2, vst3, smv1, smv2, vms1, vms2, nop, jal, jcc, alu, flag, sync, halt,
         mova1, mova2, reset);
         
-    signal state : statetype := halt;
+    signal state : statetype := halt; --initial state = halt
     signal nextstate : statetype := halt;
 
 begin
@@ -79,7 +79,7 @@ begin
     -- state transitions
     process (state, ready, reset_cpu, ir, carry, zero, v_ready, v_fetched, v_done)
     begin
-        -- avoid latches
+        -- avoid latches (initialization)
         access_type <= "000";
         c0          <= '0';
         c1          <= '0';
@@ -106,10 +106,10 @@ begin
             case state is
                 -- RESET STATE --
                 when reset => 
-                    cc4 <= "10";
+                    cc4 <= "10"; 
                     cc5 <= "10";
-                    load_c <= '1';
-                    load_z <= '1';
+                    load_c <= '1';  --enable carry flag load 
+                    load_z <= '1';  --enable zero flag load
                     nextstate <= if1;                                               
                     
                 -- INSTRUCTION FETCH STATE 1 --
