@@ -10,33 +10,33 @@
 
 // Opcodes
 
-`define RV32_LOAD     7'b0000011
-`define RV32_STORE    7'b0100011
-`define RV32_MADD     7'b1000011
-`define RV32_BRANCH   7'b1100011
+`define RV32_LOAD     7'b0000011 //Load
+`define RV32_STORE    7'b0100011 //Store
+`define RV32_MADD     7'b1000011 //Multiply and add (rs1xrs2)+rs3
+`define RV32_BRANCH   7'b1100011 //conditional branch
 
-`define RV32_LOAD_FP  7'b0000111
-`define RV32_STORE_FP 7'b0100111 
-`define RV32_MSUB     7'b1000111
-`define RV32_JALR     7'b1100111
+`define RV32_LOAD_FP  7'b0000111 //load floating point
+`define RV32_STORE_FP 7'b0100111  //store floating point
+`define RV32_MSUB     7'b1000111 //multiply and subtract (rs1xrs2)-rs3
+`define RV32_JALR     7'b1100111 //Jump and link register
 
 `define RV32_CUSTOM_0 7'b0001011
 `define RV32_CUSTOM_1 7'b0101011
-`define RV32_NMSUB    7'b1001011
+`define RV32_NMSUB    7'b1001011 //negative multiply and subtract -(rs1xrs2-rs3)
 // 7'b1101011 is reserved
 
 `define RV32_MISC_MEM 7'b0001111
-`define RV32_AMO      7'b0101111
-`define RV32_NMADD    7'b1001111
-`define RV32_JAL      7'b1101111
+`define RV32_AMO      7'b0101111 //atomic memory operation, for multi-processor synchronization
+`define RV32_NMADD    7'b1001111 //negative multiply then add -(rs1xrs2+rs3)
+`define RV32_JAL      7'b1101111 //Jump and Link
 
-`define RV32_OP_IMM   7'b0010011
-`define RV32_OP       7'b0110011
-`define RV32_OP_FP    7'b1010011
-`define RV32_SYSTEM   7'b1110011
+`define RV32_OP_IMM   7'b0010011 //operate on immediate register
+`define RV32_OP       7'b0110011 //
+`define RV32_OP_FP    7'b1010011 //floating point operations like MADD,NSUB, etc
+`define RV32_SYSTEM   7'b1110011 //used to access system functionality that might require privileged access
 
-`define RV32_AUIPC    7'b0010111
-`define RV32_LUI      7'b0110111
+`define RV32_AUIPC    7'b0010111 //add upper immediate
+`define RV32_LUI      7'b0110111 //Load upper immediate
 // 7'b1010111 is reserved
 // 7'b1110111 is reserved
 
@@ -47,14 +47,14 @@
 
 // Arithmetic FUNCT3 encodings
 
-`define RV32_FUNCT3_ADD_SUB 0
-`define RV32_FUNCT3_SLL     1
-`define RV32_FUNCT3_SLT     2
-`define RV32_FUNCT3_SLTU    3
-`define RV32_FUNCT3_XOR     4
-`define RV32_FUNCT3_SRA_SRL 5
-`define RV32_FUNCT3_OR      6
-`define RV32_FUNCT3_AND     7
+`define RV32_FUNCT3_ADD_SUB 0 // add 
+`define RV32_FUNCT3_SLL     1 //logical left shit
+`define RV32_FUNCT3_SLT     2 //set less than
+`define RV32_FUNCT3_SLTU    3 //set less than as unsigned 
+`define RV32_FUNCT3_XOR     4 //xor
+`define RV32_FUNCT3_SRA_SRL 5 //Srl is logical right shift, SRA is arithmetic right shift, not sure why they are combined ?
+`define RV32_FUNCT3_OR      6 //or
+`define RV32_FUNCT3_AND     7 //and
 
 // Branch FUNCT3 encodings
 
