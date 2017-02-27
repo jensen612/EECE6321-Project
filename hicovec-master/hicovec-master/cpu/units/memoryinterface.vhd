@@ -202,7 +202,7 @@ begin
             
             -- VECTOR DONE STATE
             when vdone1 =>
-                res <= '1';  -- reset
+                res <= '1';  -- counter reset(ready for new vector process)
                 nextstate <= vdone2;
                 
             when vdone2 =>
