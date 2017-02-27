@@ -9,6 +9,12 @@
 --
 -- VERSION:     1.0
 -----------------------------------------------------------------
+-- Two 32bit Data Input, one Carry_in Input
+-- Alu_op 4bit: defined alu operation, passing through a 2 to 1 mux (another mux input: 0000) to ALU (10 operations total)
+-- alu_out: 32bit
+-- Carry_out, zero_out: indicate if alu_out is all 0.
+
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
@@ -18,9 +24,9 @@ use work.cfg.all;
 
 entity alu is
     port(   
-        a_in:       in std_logic_vector(31 downto 0);
-        b_in:       in std_logic_vector(31 downto 0);
-        carry_in:   in std_logic;
+        a_in:       in std_logic_vector(31 downto 0); 
+        b_in:       in std_logic_vector(31 downto 0);      
+        carry_in:   in std_logic;                            
         aluop:      in std_logic_vector(3 downto 0);
         op_select:  in std_logic;
         zero_out:   out std_logic;
