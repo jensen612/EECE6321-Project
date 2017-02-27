@@ -10,6 +10,12 @@
 --
 -- VERSION:     1.0
 -----------------------------------------------------------------
+-- Asynchronous Reset, Positive edge triggered 32b register
+-- load & inc = 10, output = data_in
+-- load & inc = 01, output = output + 1 (inc)
+-- load & inc = 00 or 11, output hold original value
+
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
@@ -18,7 +24,7 @@ use ieee.numeric_std.all;
 entity instructioncounter is
     port(   clk:        in std_logic;
             load:       in std_logic;
-            inc:        in std_logic;
+            inc:        in std_logic;          -- Increment
             reset:      in std_logic;
             data_in:    in std_logic_vector(31 downto 0);
             data_out:   out std_logic_vector(31 downto 0)
