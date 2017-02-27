@@ -10,6 +10,10 @@
 --
 -- VERSION:     1.0
 -----------------------------------------------------------------
+-- Positive edge triggered Statuts Register: Input: Data_in, Load and CLK
+-- Output: data_out
+-- Output equals to Data_in if load = 1, otherwise hold original value
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
