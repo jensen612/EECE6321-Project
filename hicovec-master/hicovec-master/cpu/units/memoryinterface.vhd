@@ -1,4 +1,4 @@
-------------------------------------------------------------------
+--------------------------------------------------------------------
 -- PROJECT:      HiCoVec (highly configurable vector processor)
 --
 -- ENTITY:      memoryinterface
@@ -25,19 +25,23 @@ use work.datatypes.all;
 
 entity memoryinterface is
    port (   
-        clk:            in  std_logic;
-        address:        in  std_logic_vector(31 downto 0) := (others => '0'); 
-        access_type:    in  std_logic_vector(2 downto 0) := "000"; -- we, oe, cs
-        data_in:        in  std_logic_vector(31 downto 0);
-        vdata_in:       in  vectordata_type;
-        data_out:       out std_logic_vector(31 downto 0);
-        vdata_out:      out vectordata_type;
-        ready:          out std_logic;
-        we:             out std_logic;
-        en:             out std_logic;
-        addr:           out std_logic_vector(31 downto 0);
-        di:             out std_logic_vector(31 downto 0);
-        do:             in std_logic_vector(31 downto 0)
+        clk:            in  std_logic; --mem_clk
+        address:        in  std_logic_vector(31 downto 0) := (others => '0'); --mem_address
+        access_type:    in  std_logic_vector(2 downto 0) := "000"; 
+         -- we, oe, cs– 
+         -- /WE: write enable - when activated, values on data lines are written to specified address
+         -- /OE: output enable - data at specified location placed on data pins of memory chip, data lines connected to data bus using tristate outputs
+         -- /CS: chip select - selects a specific chip in an array of memory chips
+        data_in:        in  std_logic_vector(31 downto 0); --mem_data_out(from outside)
+        vdata_in:       in  vectordata_type; --mem_vdata_out(from cpu)
+        data_out:       out std_logic_vector(31 downto 0); --mem_data_in(into cpu)
+        vdata_out:      out vectordata_type; --mem_vdata_in(into cpu)
+        ready:          out std_logic; --mem_ready(into cpu)
+        we:             out std_logic; --we, write enable(into SRAM)
+        en:             out std_logic; --en, total enable(into SRAM)
+        addr:           out std_logic_vector(31 downto 0); --addr(into SRAM)
+        di:             out std_logic_vector(31 downto 0); --di(into SRAM)
+        do:             in std_logic_vector(31 downto 0) --do(from SRAM)
     );
 end memoryinterface;
 
@@ -62,14 +66,15 @@ begin
     -- counter
     process
     begin
-        wait until clk='1' and clk'event;
+        --posedge of clk1
+        wait until clk='1' and clk'event; 
         counter <= counter;
         
         if res = '1' then
-            counter <= (others => '0');
+            counter <= (others => '0'); --assign all bits = 0
         else
             if inc = '1' then
-                counter <= counter + '1';
+                counter <= counter + '1'; --counter increases baccording to 'inc'
             end if;
         end if;
     end process;
@@ -79,8 +84,8 @@ begin
     process 
     begin
         wait until clk='1' and clk'event;
-        if vload = '1' then
-            vdata_buffer(index) <= do;
+        if vload = '1' then  
+            vdata_buffer(index) <= do;  --load new data from SRAM
         else
             vdata_buffer(index) <= vdata_buffer(index);
         end if;
