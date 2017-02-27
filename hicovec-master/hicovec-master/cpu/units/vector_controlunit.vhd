@@ -88,16 +88,16 @@ begin
             
             -- WAIT FOR INSTRUCTION STATE --
             when wfi =>
-                 if ir_ready = '1' then
+                 if ir_ready = '1' then --next instruction has been loaded into ir(instruction register)
                     nextstate <= decode_wait;
                 else
-                    v_done <= '1';
+                    v_done <= '1';  --already in waiting state, vector unit completed last task
                     nextstate <= wfi;
                 end if;
             
             -- DECODE AND WAIT STATE --
             when decode_wait =>
-                case ir(19 downto 18) is
+                case ir(19 downto 18) is -- 'other instructions'
                     when "00" =>                               
                         if ir(17) = '0' then                        -- vnop
                             nextstate <= wfi;
@@ -123,10 +123,10 @@ begin
                             end case;
                          end if;
 
-                    when "01" =>                                -- valu
+                    when "01" =>                                -- valu commands 
                         nextstate <= valu1;
                         
-                    when "10" =>                                -- vld/vst/move
+                    when "10" =>                                -- vld/vst/move, transfer commands(must wait until scalar unit is ready)
                         case ir(15 downto 12) is
                             when "0010" =>                      -- vld
                                 if s_ready = '1' then
@@ -168,7 +168,7 @@ begin
             
             -- VMOL R,V STATE --
             when vmol =>
-                cc13 <= "10";
+                cc13 <= "10"; 
                 cc9 <= "11";
                 load_r <= '1';
                 nextstate <= wfi;
@@ -209,13 +209,13 @@ begin
                 nextstate <= valu2;
             
             when valu2 =>
-                if out_valid = '0' then
+                if out_valid = '0' then --wait until output of vector alu is valid
                     nextstate <= valu2;
                 else
                     nextstate <= valu3;
                 end if;
             
-            when valu3 =>
+            when valu3 =>  --
                 load_r <= '1';
                 nextstate <= wfi;
             
@@ -230,7 +230,7 @@ begin
             when vtos =>
                 v_ready <= '1';
                 
-                if s_fetched = '1' then
+                if s_fetched = '1' then --wait until vector unit can continue
                     nextstate <= wfi;
                 else
                     nextstate <= vtos;
@@ -241,14 +241,14 @@ begin
                 cc9 <= "01";
                 c12 <= '1';
                 load_r <= '1';
-                v_fetched <= '1';
+                v_fetched <= '1';  --scalar unit can continue now
                 nextstate <= wfi;  
                 
             -- MOVA STATE --
             when mova =>
                 cc9 <= "01";
                 load_r <= '1';
-                v_fetched <= '1';
+                v_fetched <= '1'; 
                 nextstate <= wfi;   
 
             -- SHUFFLE STATES
@@ -257,7 +257,7 @@ begin
                 nextstate <= shuffle2;
             
             when shuffle2 =>
-                if shuffle_valid = '0' then
+                if shuffle_valid = '0' then --wait until output of shuffle unit is valid
                     nextstate <= shuffle2;
                 else
                     nextstate <= shuffle3;
