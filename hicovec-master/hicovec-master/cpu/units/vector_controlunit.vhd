@@ -89,8 +89,7 @@ begin
             -- WAIT FOR INSTRUCTION STATE --
             when wfi =>
                  if ir_ready = '1' then --next instruction has been loaded into ir(instruction register)
-                    nextstate <= decode_wait;
-                else
+                    nextstate <= decode_wait;                else
                     v_done <= '1';  --already in waiting state, vector unit completed last task
                     nextstate <= wfi;
                 end if;
@@ -103,19 +102,19 @@ begin
                             nextstate <= wfi;
                         else
                             case ir(15 downto 12) is
-                                when "0001" =>                      -- vmov r,v
+                                when "0001" =>                      -- vmov r,v (copy vector registers)
                                     nextstate <= vmovrv;
                                 
-                                when "0010" =>                      -- vmov r, R<n>
+                                when "0010" =>                      -- vmov r, R<n> (copy vector registers)
                                     nextstate <= vmovrrn;
                                     
-                                when "0011" =>                      -- vmov R<n>, v
+                                when "0011" =>                      -- vmov R<n>, v (copy vector registers)
                                     nextstate <= vmovrnv;
                                 
-                                when "1000" =>                      -- vmol r,v
+                                when "1000" =>                      -- vmol r,v (shift datawords in vector register one word left)
                                     nextstate <= vmol;
                                     
-                                when "1100" =>                      -- vmor r,v
+                                when "1100" =>                      -- vmor r,v (shift datawords in vector register one word right)
                                     nextstate <= vmor;  
                                     
                                 when others =>                      -- error => ignore command
@@ -128,24 +127,24 @@ begin
                         
                     when "10" =>                                -- vld/vst/move, transfer commands(must wait until scalar unit is ready)
                         case ir(15 downto 12) is
-                            when "0010" =>                      -- vld
+                            when "0010" =>                      -- vld (vector load） 
                                 if s_ready = '1' then
                                     nextstate <= vld;
                                 else
                                     nextstate <= decode_wait;
                                 end if;
                                 
-                            when "0011" | "0101" =>             -- vst, mov d, v(t)
+                            when "0011" | "0101" =>             -- vst, mov d, v(t) (vector store/copy data from vector to scalar)
                                 nextstate <= vtos;
                             
-                            when "0100" =>                      -- mov r(t), s
+                            when "0100" =>                      -- mov r(t), s (copy data from scalar to vector)
                                 if s_ready = '1' then
                                     nextstate <= movrts;
                                 else
                                     nextstate <= decode_wait;
                                 end if;
                             
-                            when "0110" =>                      -- mova
+                            when "0110" =>                      -- mova (copy data k times into vector unit)
                                 if s_ready = '1' then
                                     nextstate <= mova;
                                 else
@@ -223,7 +222,7 @@ begin
             when vld =>
                 cc9 <= "10";
                 load_r <= '1';
-                v_fetched <= '1';
+                v_fetched <= '1'; --
                 nextstate <= wfi;
                 
             -- VECTOR TO SCALAR STATE --
