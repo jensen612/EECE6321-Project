@@ -50,7 +50,7 @@ entity controlunit is
         s_ready:        out std_logic;                      -- data from scalar unit or mi is ready
         s_fetched:      out std_logic;                      -- signal for vector unit to continue
 
-        v_ready:        in std_logic;                       -- data for scalar unit or mi is ready
+        v_ready:        in std_logic;                       -- data for scalar unit or mi (memory interface) is ready
         v_fetched:      in std_logic;                       -- signal for scalar unit to continue
         v_done:         in std_logic;                       -- vector unit completed command
         
