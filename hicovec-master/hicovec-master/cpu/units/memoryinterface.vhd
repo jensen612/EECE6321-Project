@@ -13,7 +13,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
+euse ieee.std_logic_arith.all;
 use ieee.numeric_std.all;
 use ieee.std_logic_unsigned.all;
 
@@ -23,16 +23,16 @@ use work.datatypes.all;
 -- WE, OE, SELECT
 -- high-active, high-active, 0..scalar 1..vector
 
-entity memoryinterface is
+eentity memoryinterface is
    port (   
         clk:            in  std_logic; --mem_clk
-        address:        in  std_logic_vector(31 downto 0) := (others => '0'); --mem_address
-        access_type:    in  std_logic_vector(2 downto 0) := "000"; 
+        address:        in  std_logic_vector(31 downto 0) := (others => '0'); --mem_address(from cpu)
+        access_type:    in  std_logic_vector(2 downto 0) := "000"; --mem_access(from cpu)
          -- we, oe, cs– 
          -- /WE: write enable - when activated, values on data lines are written to specified address
          -- /OE: output enable - data at specified location placed on data pins of memory chip, data lines connected to data bus using tristate outputs
          -- /CS: chip select - selects a specific chip in an array of memory chips
-        data_in:        in  std_logic_vector(31 downto 0); --mem_data_out(from outside)
+        data_in:        in  std_logic_vector(31 downto 0); --mem_data_out(from cpu)
         vdata_in:       in  vectordata_type; --mem_vdata_out(from cpu)
         data_out:       out std_logic_vector(31 downto 0); --mem_data_in(into cpu)
         vdata_out:      out vectordata_type; --mem_vdata_in(into cpu)
@@ -43,7 +43,7 @@ entity memoryinterface is
         di:             out std_logic_vector(31 downto 0); --di(into SRAM)
         do:             in std_logic_vector(31 downto 0) --do(from SRAM)
     );
-end memoryinterface;
+vend memoryinterface;
 
 architecture rtl of memoryinterface is
    
@@ -87,15 +87,15 @@ begin
         if vload = '1' then  
             vdata_buffer(index) <= do;  --load new data from SRAM
         else
-            vdata_buffer(index) <= vdata_buffer(index);
+            vdata_buffer(index) <= vdata_buffer(index); --data moves along the buffer
         end if;
     end process;
     
     -- state register
     process
     begin
-        wait until clk='1' and clk'event;
-        state <= nextstate;
+        wait until clk='1' and clk'event; 
+        state <= nextstate;  
     end process;
     
     -- state transition
@@ -116,23 +116,21 @@ begin
         
         case state is
             -- WAITING STATE
-            when waiting =>
-                ready <= '1';
+            when waiting =>                ready <= '1'; --SRAM in leisure
                 
                 case access_type is
                     when "010" =>   -- scalar read
                         ready <= '0';
-                        en <= '1';
-                        addr <= address;
+                        en <= '1';  -- open SRAM enable
+                        addr <= address; -- SRAM address from CPU
                         
-                        nextstate <= rw;
+                        nextstate <= rw; --scalar read/write done
                     
-                    when "100" =>   -- scalar write
-                        ready <= '0';
-                        en <= '1';
+                    when "100" =>   -- scalar write                        ready <= '0';
+                        en <= '1'; 
                         addr <= address;
-                        we <= '1';
-                        di <= data_in;
+                        we <= '1';  -- write enable
+                        di <= data_in; -- write data from CPU into SRAM
                         
                         nextstate <= rw;
                     
@@ -140,7 +138,7 @@ begin
                         ready <= '0';
                         nextstate <= vr1; 
                     
-                    when "101" =>   -- scalar write
+                    when "101" =>   -- vector write
                         ready <= '0';
                         nextstate <= vw1;
                     
@@ -150,9 +148,9 @@ begin
             
             -- READ/WRITE DONE STATE
             when rw =>
-                en <= '1';
+                en <= '1'; 
                 addr <= address;
-                ready <= '1';
+                ready <= '1'; -- ready for new cpu use  
                 
                 if access_type = "000" then
                     nextstate <= waiting;
@@ -164,7 +162,7 @@ begin
             -- VECTOR READ STATES
             when vr1 =>
                 en <= '1';
-                addr <= address + counter;
+                addr <= address + counter; 
                 nextstate <= vr2;
                 
             when vr2 =>
@@ -174,7 +172,7 @@ begin
                 inc <= '1';
                 vload <= '1';
                 
-                if counter = k-1 then
+                if counter = k-1 then --read k elements of SRAM to form a vector
                     nextstate <= vdone1;
                 else
                     nextstate <= vr1;
@@ -185,7 +183,7 @@ begin
                 en <= '1';
                 we <= '1';
                 addr <= address + counter;
-                di <= vdata_in(index);
+                di <= vdata_in(index); --get vector from vector buffer
                 
                 nextstate <= vw2;
             
@@ -195,7 +193,7 @@ begin
                 vload <= '1';
                 inc <= '1';
             
-                if counter = k-1 then
+                if counter = k-1 then --one by one store vector into k elements of SRAM
                     nextstate <= vdone1;
                 else
                     nextstate <= vw1;
@@ -204,7 +202,7 @@ begin
             
             -- VECTOR DONE STATE
             when vdone1 =>
-                res <= '1';
+                res <= '1';  -- reset
                 nextstate <= vdone2;
                 
             when vdone2 =>
@@ -219,7 +217,7 @@ begin
     end process;
     
     -- connect outputs
-    data_out <= do;
-    vdata_out <= vdata_buffer;
+    data_out <= do; --scalar output into CPU
+    vdata_out <= vdata_buffer; --vector output into CPU
 end;
 
