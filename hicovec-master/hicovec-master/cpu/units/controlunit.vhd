@@ -9,6 +9,16 @@
 --
 -- VERSION:     1.0
 -----------------------------------------------------------------
+-- Start at halted state (all outputs are 0 except halt = 1)
+-- 14 Branches are selected by several msb of instruction input (ir)
+-- State Branches: ld   --> load;                   vld --> vector load; 
+--                 st   --> store;                  vst --> vector store;
+--           	   mova --> move;   		    smv --> scalar move to vector unit
+--           	   vms  --> vector moves to scalar; nop --> no operation;  
+--           	   jal  --> jump and link;          jcc --> jump conditional state;
+--           	   alu  --> alu command;            flag--> set/clear flag for carry and zero   
+--                 halt --> stop or error
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
