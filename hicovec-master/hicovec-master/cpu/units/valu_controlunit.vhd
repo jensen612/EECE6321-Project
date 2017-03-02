@@ -1,4 +1,4 @@
-------------------------------------------------------------------
+-------------------------------------------------------------------
 -- PROJECT:      HiCoVec (highly configurable vector processor)
 --
 -- ENTITY:      valu_controlunit
@@ -29,8 +29,8 @@ entity valu_controlunit is
         reg_input_sel:      out std_logic;                 
         load_lsr:           out std_logic;
         load_other:         out std_logic;
-        out_valid:          out std_logic
-    );
+        out_valid:          out std_logic  -- send into vector_control_unit
+     );
 end;
 
 architecture rtl of valu_controlunit is 
@@ -51,7 +51,7 @@ begin
             counter <= (others => '0');
         else
             if inc = '1' then
-                x := unsigned(counter);
+                x := unsigned(counter); -- x's function?
                 counter <= counter + 1;
             end if;
         end if;
@@ -87,9 +87,9 @@ begin
             when waiting =>
                 out_valid <= '1';
                 reset <= '1';
-                nextstate <= waiting;
+                nextstate <= waiting; 
                 
-                if valu_go = '1' then
+                if valu_go = '1' then  --indicates whether to start alu execution(from vector_control_unit: state 'valu1')  
                     case valuop is
                         when "1110" =>
                             nextstate <= vlsr;
@@ -109,12 +109,12 @@ begin
                 end if;
             
             -- normal alu commands
-            when vother =>
+            when vother =>  
                 inc <= '1';
                 load_other <= '1';
                 
-                if counter = 3 then
-                    if vwidth = "11" then
+                if counter = 3 then  -- counter (4 cycles to change state)
+                    if vwidth = "11" then --only when vwith = "11", continues
                         nextstate <= vother64;
                     else
                         nextstate <= waiting;
@@ -128,7 +128,7 @@ begin
                 inc <= '1';
                 load_other <= '1';
                 
-                if counter = 3 then
+                if counter = 3 then --  from vother, counter starts from 0. (4 cycles)
                     nextstate <= waiting;
                 else
                     nextstate <= vother64;
@@ -167,7 +167,7 @@ begin
                 
                 reg_input_sel <= '1';
                 
-                case counter is
+                case counter is  -- use counter to select from different sources/destinations 
                     when "00" =>
                         mult_source_sel <= "00";
                         mult_dest_sel <= "00";
@@ -193,8 +193,8 @@ begin
                 inc <= '1';
                 load_other <= '1';
                 
-                mult_source_sel <= "10";
-                mult_dest_sel <= std_logic_vector(counter);
+                mult_source_sel <= "10"; -- fixed source selection
+                mult_dest_sel <= std_logic_vector(counter); -- according to the counter
                 reg_input_sel <= '1';
                 
                 if counter = 3 then
