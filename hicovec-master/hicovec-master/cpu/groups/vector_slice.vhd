@@ -25,16 +25,16 @@ entity vector_slice is
         clk:                in std_logic;  
         
         -- data inputs
-        memory_in:          in std_logic_vector(31 downto 0);
-        scalar_in:          in std_logic_vector(31 downto 0);
-        shuffle_in:         in std_logic_vector(31 downto 0);
-        carry_in:           in std_logic;
-        rshift_in:          in std_logic;
+        memory_in:          in std_logic_vector(31 downto 0); -- from memory interface
+        scalar_in:          in std_logic_vector(31 downto 0); -- from scalar unit
+        shuffle_in:         in std_logic_vector(31 downto 0); -- from shuffle unit feedback
+        carry_in:           in std_logic;  -- from other vector slices or '0'
+        rshift_in:          in std_logic;  -- from other vector slices or '0'
         
         -- data outputs
-        v_out:              out std_logic_vector(31 downto 0);
-        w_out:              out std_logic_vector(31 downto 0);
-        carry_out:          out std_logic;
+        v_out:              out std_logic_vector(31 downto 0);  -- into select unit, memory interface & shuffle unit
+        w_out:              out std_logic_vector(31 downto 0);  -- into shuffle unit
+        carry_out:          out std_logic;  -- into other vector slices
         
         -- control signals
         rrrr:               in std_logic_vector(7 downto 0);
