@@ -22,14 +22,14 @@ entity vector_alu_32 is
         clk:                in std_logic;
         
         -- data in
-        v_in:               in std_logic_vector(31 downto 0);
-        w_in:               in std_logic_vector(31 downto 0);
-        carry_in:           in std_logic;
-        rshift_in:          in std_logic;
+        v_in:               in std_logic_vector(31 downto 0); -- source vector 1
+        w_in:               in std_logic_vector(31 downto 0); -- source vector 2
+        carry_in:           in std_logic;                      
+        rshift_in:          in std_logic;                     -- shift right
         
         -- data out
-        carry_out:          out std_logic;
-        valu_out:           out std_logic_vector(31 downto 0);
+        carry_out:          out std_logic;  
+        valu_out:           out std_logic_vector(31 downto 0); 
         
         -- control signals
         valuop:             in std_logic_vector(3 downto 0);
@@ -57,19 +57,20 @@ architecture rtl of vector_alu_32 is
     signal mult_res32: unsigned(31 downto 0);   -- multiplication result 
     signal mult_res8:  unsigned(7 downto 0);    -- shift value for result shift register (multiplication)
     
-    signal output: unsigned(32 downto 0);       -- result shift register
-    signal input : unsigned (8 downto 0);       -- shift value for result shift register (other operations)
+    signal output: unsigned(32 downto 0);       -- result shift register    signal input : unsigned (8 downto 0);       -- shift value for result shift register (other operations)
     
     
 begin
-    carry <= carry_in when (carry_sel = "00") else
-             output(32) when (carry_sel = "01") else
-             '0';
+    -- key: how to generate 'carry' & 'rshift'?
+    carry <= carry_in when (carry_sel = "00") else -- wordlength = 64 bit and counter = 0
+             output(32) when (carry_sel = "01") else -- wordlength >= 32 bit and counter != 0
+             '0'; 
              
     rshift <= rshift_in when (carry_sel = "00") else
-             output(32) when (carry_sel = "01") else
+             output(32) when (carry_sel = "01") else             
              '0';
     
+    -- source_sel determines which section of 32 bits
     left <= unsigned('0' & v_in(7 downto 0)) when (source_sel) = "00" else
             unsigned('0' & v_in(15 downto 8)) when (source_sel) = "01" else
             unsigned('0' & v_in(23 downto 16)) when (source_sel) = "10" else
@@ -81,15 +82,15 @@ begin
              unsigned('0' & w_in(31 downto 24));
     
     -- execute all other operations       
-    valu_res <= left + right + carry when (valuop = "0000") else
-             left - right - carry when (valuop = "0010") else
-             left(7 downto 0) & carry when (valuop = "1100") else
-             left(0) & rshift & left(7 downto 1) when (valuop = "1110") else
-             unsigned( std_logic_vector(left) and std_logic_vector(right)) when (valuop = "1000") else
-             unsigned( std_logic_vector(left) or std_logic_vector(right)) when (valuop = "1001") else
-             unsigned( std_logic_vector(left) xor std_logic_vector(right));
+    valu_res <= left + right + carry when (valuop = "0000") else  -- VADD
+             left - right - carry when (valuop = "0010") else  --VSUB
+             left(7 downto 0) & carry when (valuop = "1100") else  --VLSL (8+1 bits)
+             left(0) & rshift & left(7 downto 1) when (valuop = "1110") else --VLSR (1+1+7 bits)
+             unsigned( std_logic_vector(left) and std_logic_vector(right)) when (valuop = "1000") else --VAND 
+             unsigned( std_logic_vector(left) or std_logic_vector(right)) when (valuop = "1001") else  --VOR
+             unsigned( std_logic_vector(left) xor std_logic_vector(right));  --VXOR
              
-    mult_gen: if use_vector_mult generate
+    mult_gen: if use_vector_mult generate -- use_vector_mult no definition?
         -- operands for multiplication
         mult_left <=  unsigned("00000000" & v_in(7 downto 0)) when mult_source_sel = "00" else
                       unsigned("00000000" & v_in(23 downto 16)) when mult_source_sel = "01" else
@@ -121,17 +122,17 @@ begin
     process
     begin
         wait until clk ='1' and clk'event;
-        if load_other = '1' then
+        if load_other = '1' then  --vother command
             -- shift from right to left
             output(32 downto 24) <= input(8 downto 0);
-            output(23 downto 0) <= output(31 downto 8);
+            output(23 downto 0) <= output(31 downto 8); 
         else
-            if load_lsr = '1' then
+            if load_lsr = '1' then --vlsr command
                 -- shift from left to right
                 output(7 downto 0) <= input(7 downto 0);
                 output(32) <= input(8);
                 output(31 downto 8) <= output(23 downto 0);
-            else
+            else  --hold the result
                 output <= output;
             end if;
         end if;
