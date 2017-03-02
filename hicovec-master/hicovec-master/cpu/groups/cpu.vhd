@@ -341,10 +341,10 @@ begin
         );
 
     -- from ir derived signals
-    dd <= ir (25 downto 24);
-    ss <= ir (23 downto 22);
-    tt <= ir (21 downto 20);
-    aluop <= ir (29 downto 26);
+    dd <= ir (25 downto 24);      
+    ss <= ir (23 downto 22);         -- from partial instruction to aluinput group sel_a 
+    tt <= ir (21 downto 20);         -- from partial instruction to aluinput group sel_b
+    aluop <= ir (29 downto 26);      -- to aluop input then through mux to alu computation unit
     rrrr <= ir (11 downto 8);
     vvvv <= ir (7 downto 4);
     wwww <= ir (3 downto 0);
