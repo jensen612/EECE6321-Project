@@ -14,7 +14,7 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 use work.cfg.all;
-use work.datatypes.all;
+duse work.datatypes.all;
 
 entity vector_executionunit is
     port (   
@@ -27,7 +27,7 @@ entity vector_executionunit is
         
         -- data outputs
         memory_out: out vectordata_type;
-        scalar_out: out std_logic_vector(31 downto 0);
+        scalar_out: out std_logic_vector(31 downto 0);  --transfer to scalar unit
         out_valid:  out std_logic;
         shuffle_valid:  out std_logic;
         
@@ -53,9 +53,9 @@ end vector_executionunit;
 architecture rtl of vector_executionunit is 
     component selectunit
         port (
-            data_in :   in  vectordata_type;
-            k_in:       in  std_logic_vector(31 downto 0);
-            data_out:   out std_logic_vector(31 downto 0)
+            data_in :   in  vectordata_type;  -- k * 32 bit wide/register
+            k_in:       in  std_logic_vector(31 downto 0);  -- choose which 32 bit to transfer to scalar unit
+            data_out:   out std_logic_vector(31 downto 0)  -- output
         );   
     end component;
     
@@ -213,7 +213,7 @@ begin
             data_out => shuffle_out
         );
         
-    valu_controlunit_impl: valu_controlunit
+    valu_controlunit_impl: valu_controlunit -- mostly used to control vector slice
         port map (
             clk => clk,
             valu_go         => valu_go,
