@@ -18,25 +18,25 @@ use ieee.numeric_std.all;
 use ieee.std_logic_unsigned.all;
 
 use work.cfg.all;
-use work.datatypes.all;
+-use work.datatypes.all;
 
 entity shuffle is
     port (
-        clk:                in  std_logic;
-        shuffle_go:         in  std_logic;
-        shuffle_valid:      out std_logic;
-        data_in_v:          in  vectordata_type;
-        data_in_w:          in  vectordata_type;
-        vn:                 in  std_logic_vector(7 downto 0);
-        ssss:               in  std_logic_vector(3 downto 0);
-        vwidth:             in  std_logic_vector(1 downto 0);
-        shuffle_out_sel:    in  std_logic_vector(1 downto 0);
-        data_out:           out vectordata_type
+        clk:                in  std_logic;   
+        shuffle_go:         in  std_logic;  -- control signals
+        shuffle_valid:      out std_logic;  
+        data_in_v:          in  vectordata_type;  -- from vector slice
+        data_in_w:          in  vectordata_type;  -- from vector slice
+        vn:                 in  std_logic_vector(7 downto 0);  -- immediate value n 
+        ssss:               in  std_logic_vector(3 downto 0);  -- valuop
+        vwidth:             in  std_logic_vector(1 downto 0);  -- width
+        shuffle_out_sel:    in  std_logic_vector(1 downto 0);  -- cc13
+        data_out:           out vectordata_type 
     );
 end shuffle;
 
 architecture rtl of shuffle is
-    constant unit_width: integer := max_shuffle_width / 4;
+    constant unit_width: integer := max_shuffle_width / 4; -- 
     
     signal v, w, shuffle_output, output : std_logic_vector(32 * k -1 downto 0);
     signal input, reg: std_logic_vector (max_shuffle_width -1 downto 0);    
@@ -60,13 +60,13 @@ architecture rtl of shuffle is
 begin  
     -- convert input from array to std_logic_vector format
     v_gen : for i in 0 to k-1 generate
-        v((i+1) * 32 -1 downto i * 32) <= data_in_v(i);
+        v((i+1) * 32 -1 downto i * 32) <= data_in_v(i); -- v stores vectordata_type data (in only one vector instead of array)
     end generate v_gen;
     
     -- perform shuffle command
-    shuffle_gen: if use_shuffle generate
+    shuffle_gen: if use_shuffle generate      
         w_gen : for i in 0 to k-1 generate
-            w((i+1) * 32 -1 downto i * 32) <= data_in_w(i);
+            w((i+1) * 32 -1 downto i * 32) <= data_in_w(i);  
         end generate w_gen;
         
         -- state register
