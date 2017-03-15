@@ -32,7 +32,7 @@ eentity memoryinterface is
          -- /WE: write enable - when activated, values on data lines are written to specified address
          -- /OE: output enable - data at specified location placed on data pins of memory chip, data lines connected to data bus using tristate outputs
          -- /CS: chip select - selects a specific chip in an array of memory chips
-        data_in:        in  std_logic_vector(31 downto 0); --mem_data_out(from cpu)
+        data_in:        in  std_logic_vector(31 downto 0); --mem_data_out(from cpu, data output from register a)
         vdata_in:       in  vectordata_type; --mem_vdata_out(from cpu)
         data_out:       out std_logic_vector(31 downto 0); --mem_data_in(into cpu)
         vdata_out:      out vectordata_type; --mem_vdata_in(into cpu)
