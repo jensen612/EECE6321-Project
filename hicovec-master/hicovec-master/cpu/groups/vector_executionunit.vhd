@@ -14,7 +14,7 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 use work.cfg.all;
-duse work.datatypes.all;
+use work.datatypes.all;
 
 entity vector_executionunit is
     port (   
