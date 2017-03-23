@@ -88,8 +88,9 @@ begin
             
             -- WAIT FOR INSTRUCTION STATE --
             when wfi =>
-                 if ir_ready = '1' then --next instruction has been loaded into ir(instruction register)
-                    nextstate <= decode_wait;                else
+                if ir_ready = '1' then --next instruction has been loaded into ir(instruction register)
+                    nextstate <= decode_wait;                
+		else
                     v_done <= '1';  --already in waiting state, vector unit completed last task
                     nextstate <= wfi;
                 end if;
