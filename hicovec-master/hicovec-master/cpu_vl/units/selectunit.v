@@ -13,12 +13,12 @@
 `include "./programmable_const.v"
 
 module selectunit(data_in, k_in, data_out);
-   input [`k-1:0] data_in [0:31];
+   input [31:0] data_in [0:(`k-1)];
    input [31:0] k_in;
    output [31:0] data_out;
    integer index;
    
    assign index = k_in;
-   assign data_out = (k_in<(`k)) ? data_in[index] : data_in[0];
+   assign data_out = (index<(`k)) ? data_in[index] : data_in[0];
    
 endmodule
