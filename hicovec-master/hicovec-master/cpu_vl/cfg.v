@@ -12,7 +12,7 @@
 //
 //
 //--------------------------------------------------------------------------------------------
-
+// Need Combined the configuration file with programmable_const.v
 
 `ifndef cfg
 `define cfg
