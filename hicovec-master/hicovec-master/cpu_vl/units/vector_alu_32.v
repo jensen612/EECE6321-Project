@@ -47,8 +47,8 @@ module vector_alu_32(clk, v_in, w_in, carry_in, rshift_in, carry_out, valu_out, 
    wire [4:0]    mult_res32;
    wire [2:0]    mult_res8;
    
-   reg [5:0]     output_xhdl1;
-   wire [3:0]    input_xhdl0;
+   reg [32:0]     output_xhdl1;
+   wire [8:0]    input_xhdl0;
    
    assign carry = ((carry_sel == 2'b00)) ? carry_in : 
                   ((carry_sel == 2'b01)) ? output_xhdl1[32] : 
