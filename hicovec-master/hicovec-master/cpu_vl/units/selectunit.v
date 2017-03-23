@@ -4,7 +4,7 @@
 //      Author          : 
 //      Company         : 
 //
-//      Description     : select a 32b output from vectorized output based on one hot coded k_in
+//      Description     : select a 32b output from vectorized output based on value of k_in
 //
 //
 //--------------------------------------------------------------------------------------------
