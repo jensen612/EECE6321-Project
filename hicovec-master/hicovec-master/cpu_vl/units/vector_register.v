@@ -15,7 +15,7 @@
 
 
 module vector_register(clk, r_in, v_out, w_out, load_r, load_select, k_in, select_v, select_w, select_r);
-   parameter [8:0] n = 0;
+   parameter       n = 0;     // parameter has no default type, it will be integer if assign a number to it during module instantiation
    parameter       slicenr = 0; //may have some problems for generic
    
    input           clk;
