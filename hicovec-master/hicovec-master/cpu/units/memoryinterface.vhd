@@ -23,7 +23,7 @@ use work.datatypes.all;
 -- WE, OE, SELECT
 -- high-active, high-active, 0..scalar 1..vector
 
-eentity memoryinterface is
+entity memoryinterface is
    port (   
         clk:            in  std_logic; --mem_clk
         address:        in  std_logic_vector(31 downto 0) := (others => '0'); --mem_address(from cpu)
@@ -43,7 +43,7 @@ eentity memoryinterface is
         di:             out std_logic_vector(31 downto 0); --di(into SRAM)
         do:             in std_logic_vector(31 downto 0) --do(from SRAM)
     );
-vend memoryinterface;
+end memoryinterface;
 
 architecture rtl of memoryinterface is
    
