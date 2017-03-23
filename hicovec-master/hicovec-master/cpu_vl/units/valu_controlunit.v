@@ -12,7 +12,8 @@
 //
 //
 //--------------------------------------------------------------------------------------------
-
+// Some signals like x, xhdl0 needs to be modified
+// always should be always@(posedge clk)
 
 module valu_controlunit(clk, valu_go, valuop, vwidth, source_sel, carry_sel, mult_source_sel, mult_dest_sel, reg_input_sel, load_lsr, load_other, out_valid);
    input            clk;
