@@ -5,6 +5,7 @@
 //      Company         : 
 //
 //      Description     : select a 32b output from vectorized output based on value of k_in
+//                        instead of using predefined datatype, we store 32k bit data_in in an array
 //
 //
 //--------------------------------------------------------------------------------------------
