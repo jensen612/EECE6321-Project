@@ -12,7 +12,7 @@
 //
 //
 //--------------------------------------------------------------------------------------------
-
+// Vector_alu signal sizes are mess up, need verify and update
 
 module vector_alu_32(clk, v_in, w_in, carry_in, rshift_in, carry_out, valu_out, valuop, source_sel, carry_sel, mult_source_sel, mult_dest_sel, reg_input_sel, load_lsr, load_other);
    input         clk;
