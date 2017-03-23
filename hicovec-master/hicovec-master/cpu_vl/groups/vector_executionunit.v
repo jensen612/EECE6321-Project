@@ -12,7 +12,7 @@
 //
 //
 //--------------------------------------------------------------------------------------------
-
+// Some unrecognized signal xhdl0 needs to be inspected
 
 module vector_executionunit(clk, memory_in, scalar_in, memory_out, scalar_out, out_valid, shuffle_valid, rrrr, vvvv, wwww, k_in, vn, valuop, vwidth, load_r, cc9, c10, c11, c12, cc13, valu_go, shuffle_go);
    input         clk;
